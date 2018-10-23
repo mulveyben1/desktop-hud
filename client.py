@@ -1,6 +1,7 @@
 import requests
 import ast
 import time
+import re
 import RPi.GPIO as GPIO
 import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
@@ -57,7 +58,7 @@ disabledisplay = False
 
 def getstats():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0'}
-    r = requests.get('http://DESKTOP-4MQRFGJ.local/', headers=headers)
+    r = requests.get('http://DESKTOP-4MQRFGJ.local:8080/', headers=headers)
     stats = ast.literal_eval(r.text)
     return stats
 
@@ -74,11 +75,8 @@ def displayram(ram):
 
 
 def displaydisks(disks):
-    draw.text((x, top), "C: %sGB/%sGB" % (disks[1], disks[0]), font=font, fill=255)
-    draw.text((x, top+8), "D: %sGB/%sGB" % (disks[3], disks[2]), font=font, fill=255)
-    draw.text((x, top+16), "F: %sGB/%sGB" % (disks[5], disks[4]), font=font, fill=255)
-    draw.text((x, top+24), "G: %sGB/%sGB" % (disks[7], disks[6]), font=font, fill=255)
-    draw.text((x, top+32), "I: %sGB/%sGB" % (disks[9], disks[8]), font=font, fill=255)
+    for i in range(numdevices):
+        draw.text((x, top+(8*i)), str(devices[i]) + ': ' + str(disks['used_%s' % devices[i]]) + 'GB/' + str(disks['size_%s' % devices[i]]) + 'GB', font=font, fill=255)
 
 
 while True:
@@ -106,17 +104,16 @@ while True:
     ram_free = round(stats['free_mem'], 1)
     ram = [ram_total, ram_free]
 
-    disks = []
-    disks.append(round(stats['c_size'], 1))
-    disks.append(round(stats['c_used'], 1))
-    disks.append(round(stats['d_size'], 1))
-    disks.append(round(stats['d_used'], 1))
-    disks.append(round(stats['f_size'], 1))
-    disks.append(round(stats['f_used'], 1))
-    disks.append(round(stats['g_size'], 1))
-    disks.append(round(stats['g_used'], 1))
-    disks.append(round(stats['i_size'], 1))
-    disks.append(round(stats['i_used'], 1))
+    numdevices = stats['numdisks']
+    devices = []
+    disks = {}
+    for key in stats.iterkeys():
+        if key.startswith('size'):
+            devices.append(re.search('(size_)(\/(\w+)?)', key).group(2))
+
+    for device in devices:
+        disks['size_%s' % device] = round(stats['size_%s' % device], 1)
+        disks['used_%s' % device] = round(stats['used_%s' % device], 1)
 
     draw.rectangle((0, 0, width, height), outline=0, fill=0)
     if currentpage == 0 and not disabledisplay:
@@ -133,4 +130,3 @@ while True:
 
     time.sleep(0.1)
     currenttime += 1
-
