@@ -58,7 +58,7 @@ disabledisplay = False
 
 def getstats():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0'}
-    r = requests.get('http://DESKTOP-4MQRFGJ.local:8080/', headers=headers)
+    r = requests.get('http://192.168.101.145:8080/', headers=headers)
     stats = ast.literal_eval(r.text)
     return stats
 
@@ -107,7 +107,7 @@ while True:
     numdevices = stats['numdisks']
     devices = []
     disks = {}
-    for key in stats.iterkeys():
+    for key in stats:
         if key.startswith('size'):
             devices.append(re.search('(size_)(\/(\w+)?)', key).group(2))
 
