@@ -8,13 +8,15 @@ p = psutil.Process()
 with p.oneshot():
     cpu_count = psutil.cpu_count(logical=True)
     total_mem = psutil.virtual_memory().total / 1073741824  # mem in GB
-    numdisks = len(list(psutil.disk_partitions()))
+    numdisks = len(list(psutil.disk_partitions(True)))
     parts = {}
-    for part in psutil.disk_partitions():
+    for part in psutil.disk_partitions(True):
         parts['%s' % part.mountpoint] = part
+    print(parts)
 
 
 def get_sys_info():
+    count = 0
     buffer = {}
     for i in range(0, cpu_count):
         buffer['cpu_%s' % i] = psutil.cpu_percent(interval=None, percpu=True)[i]
@@ -23,10 +25,20 @@ def get_sys_info():
     buffer['total_mem'] = total_mem
     buffer['free_mem'] = psutil.virtual_memory().available / 1073741824
     for part in parts.keys():
-        buffer['size_%s' % part] = psutil.disk_usage('%s' % part).total / 1073741824
-        buffer['used_%s' % part] = psutil.disk_usage('%s' % part).used / 1073741824
-    buffer['numdisks'] = numdisks
+        try:
+            buffer['size_%s' % part] = psutil.disk_usage('%s' % part).total / 1073741824
+            buffer['used_%s' % part] = psutil.disk_usage('%s' % part).used / 1073741824
+        except PermissionError:
+            print(part)
+            count -= 1
+            pass
+        except OSError:
+            print(part)
+            count -= 1
+            pass
 
+    buffer['numdisks'] = numdisks + count
+    print(buffer)
     return buffer
 
 
@@ -39,7 +51,7 @@ class MyServer(BaseHTTPRequestHandler):
         self.wfile.write(bytes("%s" % get_sys_info(), "utf-8"))
 
     def do_POST(self):
-        print("incomming http: ", self.path)
+        print("incoming http: ", self.path)
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         self.send_response(200)
