@@ -72,9 +72,14 @@ def displaycpu(cpu):
     draw.text((x+10, top+16), '5: ' + str(cpu[5]) + '%', font=font, fill=255)
     draw.text((x, top+24), '6: ' + str(cpu[6]) + '%', font=font, fill=255)
     draw.text((x+10, top+24), '7: ' + str(cpu[7]) + '%', font=font, fill=255)
+    draw.text((x, top+32), '8: ' + str(cpu[8]) + '%', font=font, fill=255)
+    draw.text((x+10, top+32), '9: ' + str(cpu[9]) + '%', font=font, fill=255)
+    draw.text((x, top+40), '10: ' + str(cpu[10]) + '%', font=font, fill=255)
+    draw.text((x+10, top+40), '11: ' + str(cpu[11]) + '%', font=font, fill=255)
+
 
 def displayram(ram):
-    draw.text((x, top+32), "Memory: " + str(ram[1]) + 'GB/' + str(ram[0]) + 'GB', font=font, fill=255)
+    draw.text((x, top+48), "Memory: " + str(ram[1]) + 'GB/' + str(ram[0]) + 'GB', font=font, fill=255)
 
 
 def displaydisks(disks):
@@ -101,7 +106,7 @@ while True:
         disabledisplay = not disabledisplay
 
     cpu = []
-    for i in range(0, 4):
+    for i in range(0, 12):
         cpu.append(stats['cpu_%s' % i])
     ram_total = round(stats['total_mem'], 1)
     ram_free = round(stats['free_mem'], 1)
@@ -126,7 +131,7 @@ while True:
         displaydisks(disks)
 
     if not disabledisplay:
-        draw.text((x, top+40), 'Page: ' + str(currentpage), font=font, fill=255)
+        draw.text((x, top+56), 'Page: ' + str(currentpage), font=font, fill=255)
 
     disp.image(image)
     disp.display()
