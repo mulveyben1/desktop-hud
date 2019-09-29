@@ -58,16 +58,16 @@ disabledisplay = False
 
 def getstats():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0'}
-    r = requests.get('http://192.168.101.145:8080/', headers=headers)
+    r = requests.get('http://mulveyben-dorm.ddns.net:8080/', headers=headers)
     stats = ast.literal_eval(r.text)
     return stats
 
 
 def displaycpu(cpu):
-    draw.text((x, top), 'CPU0: ' + str(cpu[0]) + '%', font=font, fill=255)
-    draw.text((x, top+8), 'CPU1: ' + str(cpu[1]) + '%', font=font, fill=255)
-    draw.text((x, top+16), 'CPU2: ' + str(cpu[2]) + '%', font=font, fill=255)
-    draw.text((x, top+24), 'CPU3: ' + str(cpu[3]) + '%', font=font, fill=255)
+    draw.text((x, top), '0: ' + str(cpu[0]) + '%', font=font, fill=255)
+    draw.text((x, top+8), '1: ' + str(cpu[1]) + '%', font=font, fill=255)
+    draw.text((x, top+16), '2: ' + str(cpu[2]) + '%', font=font, fill=255)
+    draw.text((x, top+24), '3: ' + str(cpu[3]) + '%', font=font, fill=255)
 
 
 def displayram(ram):
@@ -109,7 +109,7 @@ while True:
     disks = {}
     for key in stats:
         if key.startswith('size'):
-            devices.append(re.search('(size_)(\/(\w+)?)', key).group(2))
+            devices.append(re.search('(size_)(\w+:\\\\)?', key).group(2))
 
     for device in devices:
         disks['size_%s' % device] = round(stats['size_%s' % device], 1)
