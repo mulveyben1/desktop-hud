@@ -23,7 +23,7 @@ def get_sys_info():
         time.sleep(0.1)
         buffer['cpu_%s' % i] = psutil.cpu_percent(interval=None, percpu=True)[i]
     buffer['total_mem'] = total_mem
-    buffer['free_mem'] = psutil.virtual_memory().available / 1073741824
+    buffer['free_mem'] = psutil.virtual_memory().used / 1073741824
     for part in parts.keys():
         try:
             buffer['size_%s' % part] = psutil.disk_usage('%s' % part).total / 1073741824

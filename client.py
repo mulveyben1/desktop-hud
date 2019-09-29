@@ -65,10 +65,13 @@ def getstats():
 
 def displaycpu(cpu):
     draw.text((x, top), '0: ' + str(cpu[0]) + '%', font=font, fill=255)
-    draw.text((x, top+8), '1: ' + str(cpu[1]) + '%', font=font, fill=255)
-    draw.text((x, top+16), '2: ' + str(cpu[2]) + '%', font=font, fill=255)
-    draw.text((x, top+24), '3: ' + str(cpu[3]) + '%', font=font, fill=255)
-
+    draw.text((x+10, top), '1: ' + str(cpu[1]) + '%', font=font, fill=255)
+    draw.text((x, top+8), '2: ' + str(cpu[2]) + '%', font=font, fill=255)
+    draw.text((x+10, top+8), '3: ' + str(cpu[3]) + '%', font=font, fill=255)
+    draw.text((x, top+16), '4: ' + str(cpu[4]) + '%', font=font, fill=255)
+    draw.text((x+10, top+16), '5: ' + str(cpu[5]) + '%', font=font, fill=255)
+    draw.text((x, top+24), '6: ' + str(cpu[6]) + '%', font=font, fill=255)
+    draw.text((x+10, top+24), '7: ' + str(cpu[7]) + '%', font=font, fill=255)
 
 def displayram(ram):
     draw.text((x, top+32), "Memory: " + str(ram[1]) + 'GB/' + str(ram[0]) + 'GB', font=font, fill=255)
