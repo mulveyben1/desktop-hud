@@ -50,7 +50,7 @@ x = 0
 
 font = ImageFont.load_default()
 
-pages = 2
+pages = 3
 currentpage = 0
 currenttime = 0
 disabledisplay = False
@@ -58,7 +58,7 @@ disabledisplay = False
 
 def getstats():
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0'}
-    r = requests.get('http://mulveyben-dorm.ddns.net:8080/', headers=headers)
+    r = requests.get('http://192.168.200.16:8080/', headers=headers)
     stats = ast.literal_eval(r.text)
     return stats
 
@@ -85,6 +85,14 @@ def displayram(ram):
 def displaydisks(disks):
     for i in range(numdevices):
         draw.text((x, top+(8*i)), str(devices[i]) + ': ' + str(disks['used_%s' % devices[i]]) + 'GB/' + str(disks['size_%s' % devices[i]]) + 'GB', font=font, fill=255)
+
+
+def displaytime():
+    current_time = time.strftime('%I:%M:%S %p')
+    current_date = time.strftime('%a, %d %b %Y')
+    draw.text((x, top), current_time, font=font, fill=255)
+    draw.text((x, top+8), current_date, font=font, fill=255)
+
 
 
 while True:
@@ -129,6 +137,8 @@ while True:
         displayram(ram)
     elif currentpage == 1 and not disabledisplay:
         displaydisks(disks)
+    elif currentpage == 2 and not disabledisplay:
+        displaytime()
 
     if not disabledisplay:
         draw.text((x, top+56), 'Page: ' + str(currentpage), font=font, fill=255)
